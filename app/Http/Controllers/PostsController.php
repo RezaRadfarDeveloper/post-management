@@ -14,6 +14,11 @@ class PostsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+//        $this->middleware('auth')->only(['create','edit','store','update','destroy']);
+    }
     public function index()
     {
 
@@ -44,7 +49,7 @@ class PostsController extends Controller
        $validated =  $request->validated();
        $post = BlogPost::create($validated);
 
-        $request->session()->flash('status','Post was created Successfully!!!');
+        request()->session()->flash('status','Post was created Successfully!!!');
 
        return redirect()->route('posts.show',['post'=>$post->id]);
     }
@@ -57,7 +62,7 @@ class PostsController extends Controller
      */
     public function show($id)
     {
-        return view('posts.show',['post'=>BlogPost::findOrfail($id)]);
+        return view('posts.show',['post'=>BlogPost::with('comments')->findOrfail($id)]);
     }
 
     /**

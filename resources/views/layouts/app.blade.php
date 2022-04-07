@@ -31,6 +31,15 @@
             <a class="p-2 text-dark" href="/">Contact</a>
             <a class="p-2 text-dark" href="{{route('posts.index')}}">Blog Posts</a>
             <a class="p-2 text-dark" href="{{route('posts.create')}}">Add Blog Post</a>
+            @guest
+               @if(Route::has('register'))
+                    <a class="p-2 text-dark" href="{{route('register')}}">Register</a>
+                @endif
+                   <a class="p-2 text-dark" href="{{route('login')}}">Login</a>
+            @else
+                <a class="p-2 text-dark" href="{{route('logout')}}">Logout ({{Auth::user()->name}})</a>
+
+            @endguest
         </nav>
     </div>
     <div class="container pt-2">

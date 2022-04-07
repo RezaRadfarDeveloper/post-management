@@ -36,4 +36,14 @@ class UserFactory extends Factory
             ];
         });
     }
+
+    public function defaultAdmin()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'email' => 'admin@admin.com',
+                'name' => 'Reza Radfar'
+            ];
+        });
+    }
 }

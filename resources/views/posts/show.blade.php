@@ -9,4 +9,12 @@
     @if(now()->diffInMinutes($post->created_at) < 5)
         <div class="alert-info alert">New Post!</div>
     @endif
+    @if(!$post->comments)
+        No comment yet!
+    @else
+        @foreach($post->comments as $comment)
+            <p>{{$comment->content}}</p>
+            <p class="text-muted">{{$comment->created_at->diffForHumans()}}</p>
+        @endforeach
+    @endif
 @endsection
