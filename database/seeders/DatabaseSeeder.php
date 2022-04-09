@@ -16,19 +16,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-       $admin =  User::factory()->defaultAdmin()->create();
-      $non_admins =   User::factory()->count(3)->create();
-     $users = $non_admins->concat([$admin]);
+            if($this->command->confirm('Refresh the Database?', true)) {
+                $this->command->call('migrate:fresh');
+                $this->command->info('database was refreshed');
+            }
+        $this->call([
+            UsersTableSeeder::class,
+            BlogPostsTableSeeder::class,
+            CommentsTableSeeder::class
+        ]);
 
-    $posts = BlogPost::factory()->count(20)->make()->each(function($post) use ($users) {
-         $post->user_id = $users->random()->id;
-         $post->save();
-     });
 
-    $comments = Comment::factory()->count(40)->make()->each(function ($comment) use ($posts) {
-         $comment->blog_post_id = $posts->random()->id;
-         $comment->save();
-     });
 
 
     }
