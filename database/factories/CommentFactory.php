@@ -17,7 +17,8 @@ class CommentFactory extends Factory
         $posts = BlogPost::all();
         return [
             'content' => $this->faker->paragraphs(3,true),
-            'blog_post_id' => $posts->random()->id
+            'blog_post_id' => $posts->random()->id,
+            'created_at' => $this->faker->dateTimeBetween('-3 months'),
         ];
     }
 }

@@ -14,8 +14,9 @@ class BlogPostFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->title,
-            'content' => $this->faker->paragraphs(3,true)
+            'title' => $this->faker->name,
+            'content' => $this->faker->paragraphs(3,true),
+            'created_at' => $this->faker->dateTimeBetween('-3 months'),
         ];
     }
 }

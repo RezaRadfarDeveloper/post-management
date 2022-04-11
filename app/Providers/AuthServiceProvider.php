@@ -14,6 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        'App\Models\BlogPost' => 'App\Policies\BlogPostPolicy',
     ];
 
     /**
@@ -25,7 +26,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::resource('posts', 'App\Policies\BlogPostPolicy');
+//        Gate::resource('posts', 'App\Policies\BlogPostPolicy');
 //        Gate::define('update-post', function ($user, $post) {
 //            return $user->id === $post->user->id;
 //        });
@@ -33,9 +34,9 @@ class AuthServiceProvider extends ServiceProvider
 //            return $user->id === $post->user->id;
 //        });
 //
-//        Gate::before(function($user,$ability) {
-//            if($user->email === "reza.radfa@gmail.com" && in_array($ability, ['posts.update']))
-//                return true;
-//        });
+        Gate::before(function($user,$ability) {
+            if($user->is_admin  && in_array($ability, ['update']))
+                return true;
+        });
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePost;
 use App\Models\BlogPost;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
@@ -25,7 +26,8 @@ class PostsController extends Controller
 
         return view('posts.index',
             [
-                'posts'=>BlogPost::withCount('comments')->get()
+                'posts'=>BlogPost::latest()->withCount('comments')->get(),
+                'mostCommented' => BlogPost::mostCommented()->take(5)->get()
             ]);
     }
 
@@ -47,7 +49,9 @@ class PostsController extends Controller
      */
     public function store(StorePost $request)
     {
+
        $validated =  $request->validated();
+       $validated['user_id'] = Auth::user()->id;
        $post = BlogPost::create($validated);
 
         request()->session()->flash('status','Post was created Successfully!!!');
@@ -75,7 +79,7 @@ class PostsController extends Controller
     public function edit($id)
     {
         $post =  BlogPost::findOrfail($id);
-        $this->authorize('posts.update',$post);
+        $this->authorize($post);
 
         return view('posts.edit',['post'=> $post]);
     }
@@ -91,7 +95,7 @@ class PostsController extends Controller
     {
         $post = BlogPost::findOrfail($id);
 
-        $this->authorize('posts.update',$post);
+        $this->authorize($post);
         $validated =  $request->validated();
         $post->fill($validated);
         $post->save();
@@ -110,7 +114,7 @@ class PostsController extends Controller
     public function destroy($id)
     {
         $post = BlogPost::findOrfail($id);
-        $this->authorize('posts.delete',$post);
+        $this->authorize($post);
 
         $post->delete();
 
