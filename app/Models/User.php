@@ -45,4 +45,14 @@ class User extends Authenticatable
     public function blogPosts() {
         return $this->hasMany(BlogPost::class);
     }
+
+    public function scopeWithMostPosts($query) {
+        return $query->withCount('blogPosts')->orderBy('blog_posts_count', 'desc');
+    }
+
+    public function scopeWithMostPostsLastMonth($query) {
+        return $query->withCount(['blogPosts' => function($query) {
+            $query->whereBetween(Static::CREATED_AT,[now()->subMonths(1), now()]);
+        }])->having('blog_posts_count', '>=', 4)->orderBy('blog_posts_count', 'desc');
+    }
 }

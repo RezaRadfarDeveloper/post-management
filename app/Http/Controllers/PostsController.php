@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePost;
 use App\Models\BlogPost;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
+
 
 class PostsController extends Controller
 {
@@ -23,11 +23,12 @@ class PostsController extends Controller
     }
     public function index()
     {
-
         return view('posts.index',
             [
-                'posts'=>BlogPost::latest()->withCount('comments')->get(),
-                'mostCommented' => BlogPost::mostCommented()->take(5)->get()
+                'posts'=> BlogPost::latest()->withCount('comments')->get(),
+                'mostCommented' => BlogPost::mostCommented()->take(5)->get(),
+                'mostActive' => User::withMostPosts()->take(5)->get(),
+                'mostActiveLastMonth' => User::withMostPostsLastMonth()->take(5)->get()
             ]);
     }
 
