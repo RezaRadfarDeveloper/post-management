@@ -11,17 +11,6 @@
         <div class="col-4">
             <div class="container">
                 <div class="row">
-{{--                    <div class="card" style="width: 100%;">--}}
-{{--                        <ul class="list-group list-group-flush">--}}
-{{--                            @foreach($mostCommented as $post)--}}
-{{--                                <li class="list-group-item">--}}
-{{--                                    <a href="{{route('posts.show',['post' => $post->id])}}">--}}
-{{--                                        {{$post->title}}--}}
-{{--                                    </a>--}}
-{{--                                </li>--}}
-{{--                            @endforeach--}}
-{{--                        </ul>--}}
-{{--                    </div>--}}
                     <x-card>
                         @slot('title', 'Most Popular')
                             @slot('items')

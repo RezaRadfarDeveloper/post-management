@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
-use const http\Client\Curl\AUTH_ANY;
+use Illuminate\Support\Facades\Cache;
+
 
 class BlogPost extends Model
 {
@@ -29,5 +29,12 @@ class BlogPost extends Model
 
    public function scopeMostCommented($query) {
        return $query->withCount('comments')->orderBy('comments_count','desc');
+   }
+
+   public static function booted() {
+
+       static::updating(function($post) {
+           Cache::forget("blog-post-{$post->id}");
+       });
    }
  }
