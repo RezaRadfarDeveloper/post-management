@@ -9,7 +9,10 @@
             </li>
         @endforeach
         @else
+            @if(is_string($items))
         {{$items}}
+            @else
+            @endif
         @endif
     </ul>
 </div>

@@ -10,6 +10,7 @@
 </h3>
 <x-updated :name="$post->user->name" :date="$post->created_at">
 </x-updated>
+<x-tags :tags="$post->tags"></x-tags>
 @if($post->comments_count)
 <p>{{$post->comments_count}}</p>
 @else

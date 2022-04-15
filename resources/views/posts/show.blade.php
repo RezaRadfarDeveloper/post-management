@@ -5,6 +5,8 @@
     <h3>{{$post->title}}</h3>
     <p>{{$post->content}}</p>
     <p>Added {{$post->created_at->diffForHumans()}}</p>
+    <x-tags :tags="$post->tags"></x-tags>
+    visite by {{$counter}} people
 
        <x-badge type="success" :show="now()->diffInMinutes($post->created_at) < 300" />
 

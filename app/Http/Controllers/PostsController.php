@@ -26,9 +26,9 @@ class PostsController extends Controller
     {
 
         if(Auth::check() && Auth::user()->is_admin){
-            $posts = BlogPost::with('user')->withCount('comments')->withTrashed()->get();
+            $posts = BlogPost::with('user')->with('tags')->withCount('comments')->withTrashed()->get();
         }else {
-            $posts = BlogPost::with('user')->withCount('comments')->get();
+            $posts = BlogPost::with('user')->with('tags')->withCount('comments')->get();
         }
 
             $mostCommented = Cache::remember('mostCommented', now()->addSecond(60), function () {
@@ -90,10 +90,37 @@ class PostsController extends Controller
     public function show($id)
     {
         $post = Cache::remember("blog-post-{$id}", 10, function () use ($id) {
-            return BlogPost::with('comments')->findOrfail($id);
+            return BlogPost::with('comments')->with('user')->with('tags')->findOrfail($id);
         });
 
-        return view('posts.show',['post'=>$post]);
+        $counterKey = "blog-post-{$id}-counter";
+        $userKey = "blog-post-{$id}-users";
+        $sessionId = session()->getId();
+        $now = now();
+        $users = Cache::get($userKey,[]);
+        $updatedUsers = [];
+        $difference = 0;
+
+        foreach($users as $session => $lastVisit){
+            if($now->diffInMinutes($lastVisit) >= 1) {
+                    $difference --;
+            } else {
+                $updatedUsers [$session] = $lastVisit;
+            }
+        }
+
+        if(!array_key_exists($sessionId, $users) || $now->diffInMinutes($users[$sessionId]) >= 1) {
+            $difference++;
+        }
+        $updatedUsers[$sessionId] = $now;
+
+            if(!Cache::has($userKey))
+                Cache::forever($userKey, 0);
+            Cache::forever($userKey, $updatedUsers);
+
+            $counter = Cache::increment($counterKey,$difference);
+
+        return view('posts.show',['post'=>$post, 'counter' => $counter]);
     }
 
     /**

@@ -30,6 +30,9 @@ class BlogPost extends Model
    public function scopeMostCommented($query) {
        return $query->withCount('comments')->orderBy('comments_count','desc');
    }
+   public function tags() {
+       return $this->belongsToMany(Tag::class)->withTimestamps();
+   }
 
    public static function booted() {
 
