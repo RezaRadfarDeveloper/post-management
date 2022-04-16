@@ -5,14 +5,11 @@
         @if(is_a($items, 'Illuminate\Support\Collection'))
         @foreach($items as $item)
             <li class="list-group-item">
-                {{$item->name}}
+                {{$item}}
             </li>
         @endforeach
         @else
-            @if(is_string($items))
         {{$items}}
-            @else
-            @endif
         @endif
     </ul>
 </div>
