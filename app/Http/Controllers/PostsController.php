@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePost;
 use App\Models\BlogPost;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
+
 
 
 class PostsController extends Controller
@@ -26,9 +25,9 @@ class PostsController extends Controller
     {
 
         if(Auth::check() && Auth::user()->is_admin){
-            $posts = BlogPost::with('user')->with('tags')->withCount('comments')->withTrashed()->get();
+            $posts = BlogPost::latestWithRelations()->withTrashed()->get();
         }else {
-            $posts = BlogPost::with('user')->with('tags')->withCount('comments')->get();
+            $posts = BlogPost::latestWithRelations()->get();
         }
 
 //    BlogPost::latest()->withCount('comments')->get();
@@ -61,6 +60,16 @@ class PostsController extends Controller
        $validated['user_id'] = Auth::user()->id;
        $post = BlogPost::create($validated);
 
+       $hasFile = $request->hasFile('thumbnail');
+            dump($hasFile);
+       if($hasFile) {
+           $file = $request->file('thumbnail');
+           dump($file->getClientOriginalName());
+           dump($file->getClientMimeType());
+           dump($file->getClientOriginalExtension());
+           dump($file->store('thumbnails'));
+       }
+       die;
         request()->session()->flash('status','Post was created Successfully!!!');
 
        return redirect()->route('posts.show',['post'=>$post->id]);
@@ -74,8 +83,8 @@ class PostsController extends Controller
      */
     public function show($id)
     {
-        $post = Cache::remember("blog-post-{$id}", 10, function () use ($id) {
-            return BlogPost::with('comments')->with('user')->with('tags')->findOrfail($id);
+        $post = Cache::remember("blog-post-{$id}", now()->addSecond(60), function () use ($id) {
+            return BlogPost::latest()->with('comments','user', 'tags','comments.user')->findOrfail($id);
         });
 
         $counterKey = "blog-post-{$id}-counter";

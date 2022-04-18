@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Http\Controllers\PostsController;
 use App\Models\BlogPost;
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class CommentsTableSeeder extends Seeder
@@ -17,14 +18,16 @@ class CommentsTableSeeder extends Seeder
     public function run()
     {
         $posts = BlogPost::all();
+        $users = User::all();
         if($posts->count() <= 0) {
             $this->command->info('there is no post added');
             return;
         }
         $commentCount = (int)$this->command->ask('How many commenta do you want to create?',150);
 
-        Comment::factory()->count($commentCount)->make()->each(function ($comment) use ($posts) {
+        Comment::factory()->count($commentCount)->make()->each(function ($comment) use ($posts, $users) {
             $comment->blog_post_id = $posts->random()->id;
+            $comment->user_id = $users->random()->id;
             $comment->save();
         });
     }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostCommentController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\PostTagController;
 use Illuminate\Support\Facades\Route;
@@ -21,4 +22,6 @@ Route::get('/', function () {
 
 Auth::routes();
 Route::resource('posts',PostsController::class);
+
+Route::resource('posts.comments', PostCommentController::class)->only('store');
 Route::get('/posts/tag/{tag}', [PostTagController::class,'index'])->name('posts.tags.index');

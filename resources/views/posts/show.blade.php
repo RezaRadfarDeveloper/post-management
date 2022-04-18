@@ -8,8 +8,9 @@
             <p>{{$post->content}}</p>
             <p>Added {{$post->created_at->diffForHumans()}}</p>
             <x-tags :tags="$post->tags"></x-tags>
-            visite by {{$counter}} people
-
+            visited by {{$counter}} people
+            <h4>Comments</h4>
+            @include('comments._form')
                <x-badge type="success" :show="now()->diffInMinutes($post->created_at) < 300" />
 
             @if(!$post->comments)
@@ -17,7 +18,7 @@
             @else
                 @foreach($post->comments as $comment)
                     <p>{{$comment->content}}</p>
-                    <x-updated :date="$comment->created_at"></x-updated>
+                    <x-updated :date="$comment->created_at" :name="$comment->user->name"></x-updated>
                 @endforeach
             @endif
         </div>

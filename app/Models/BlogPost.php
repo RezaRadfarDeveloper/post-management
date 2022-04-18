@@ -34,6 +34,10 @@ class BlogPost extends Model
        return $this->belongsToMany(Tag::class)->withTimestamps();
    }
 
+   public function scopeLatestWithRelations($query) {
+       return $query->latest()->withCount('comments')->with('user','tags');
+   }
+
    public static function booted() {
 
        static::updating(function($post) {
