@@ -8,7 +8,7 @@
         </del>
     @endif
 </h3>
-<x-updated :name="$post->user->name" :date="$post->created_at">
+<x-updated :name="$post->user->name" :date="$post->created_at" :userId="$post->user->id">
 </x-updated>
 <x-tags :tags="$post->tags"></x-tags>
 @if($post->comments_count)

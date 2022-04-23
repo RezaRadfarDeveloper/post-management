@@ -22,6 +22,9 @@ class BlogPost extends Model
    public function user() {
        return $this->belongsTo(User::class);
    }
+   public function image() {
+       return $this->hasOne(Image::class);
+   }
 
    public function scopeLatest(Builder $query) {
        return $query->orderBy('created_at','desc');

@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePost;
 use App\Models\BlogPost;
+use App\Models\Image;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-
+use Illuminate\Support\Facades\Storage;
 
 
 class PostsController extends Controller
@@ -60,16 +61,20 @@ class PostsController extends Controller
        $validated['user_id'] = Auth::user()->id;
        $post = BlogPost::create($validated);
 
-       $hasFile = $request->hasFile('thumbnail');
-            dump($hasFile);
-       if($hasFile) {
+
+       if($request->hasFile('thumbnail')) {
            $file = $request->file('thumbnail');
-           dump($file->getClientOriginalName());
-           dump($file->getClientMimeType());
-           dump($file->getClientOriginalExtension());
-           dump($file->store('thumbnails'));
+            $thumbNailPath = Storage::disk('public')
+              ->putFileAs('thumbnails',$file,now()
+              ->format('Y_m_d_H_i_s').".".$file->getClientOriginalExtension());
        }
-       die;
+
+       $post->image()->save(
+           Image::create([
+               'path' => $thumbNailPath
+           ])
+       );
+
         request()->session()->flash('status','Post was created Successfully!!!');
 
        return redirect()->route('posts.show',['post'=>$post->id]);
@@ -145,6 +150,25 @@ class PostsController extends Controller
         $this->authorize($post);
         $validated =  $request->validated();
         $post->fill($validated);
+        if($request->hasFile('thumbnail')) {
+            $file = $request->file('thumbnail');
+            $thumbNailPath = Storage::disk('public')
+                ->putFileAs('thumbnails',$file,now()
+                        ->format('Y_m_d_H_i_s').".".$file->getClientOriginalExtension());
+            if($post->image) {
+                Storage::delete($post->image->path);
+                $post->image->path = $thumbNailPath;
+                $post->image->save();
+            }
+            else {
+                $post->image()->save(
+                    Image::create([
+                        'path' => $thumbNailPath
+                    ])
+                );
+            }
+        }
+
         $post->save();
 
         $request->session()->flash('status', 'post was updated successfully');
