@@ -70,7 +70,7 @@ class PostsController extends Controller
        }
 
        $post->image()->save(
-           Image::create([
+           Image::make([
                'path' => $thumbNailPath
            ])
        );
@@ -162,7 +162,7 @@ class PostsController extends Controller
             }
             else {
                 $post->image()->save(
-                    Image::create([
+                    Image::make([
                         'path' => $thumbNailPath
                     ])
                 );

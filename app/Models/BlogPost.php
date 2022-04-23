@@ -16,14 +16,14 @@ class BlogPost extends Model
    protected $fillable = ['title','content','user_id'];
 
    public function comments() {
-       return $this->hasMany('App\Models\Comment')->latest();
+       return $this->morphMany('App\Models\Comment','commentable')->latest();
    }
 
    public function user() {
        return $this->belongsTo(User::class);
    }
    public function image() {
-       return $this->hasOne(Image::class);
+       return $this->morphOne(Image::class,'imageable');
    }
 
    public function scopeLatest(Builder $query) {

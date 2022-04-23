@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-    <form action="{{route('users.update', ['user' => $user->id])}}" method="POST" >
+    <form action="{{route('users.update', ['user' => $user->id])}}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
     <div class="row">
         <div class="col-4">
-            <img src="" class="img-thumbnail avatar" alt="">
+            <img src="{{$user->image->url()}}" class="img-thumbnail avatar" alt="">
             <div class="card mt-4">
                 <div class="card-body">
                     <h6>Upload Different Image</h6>
@@ -25,4 +25,6 @@
         </div>
     </div>
     </form>
+    <x-errors></x-errors>
+
 @endsection

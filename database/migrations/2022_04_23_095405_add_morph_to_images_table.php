@@ -15,7 +15,7 @@ class AddMorphToImagesTable extends Migration
     {
         Schema::table('images', function (Blueprint $table) {
             $table->dropColumn('blog_post_id');
-            $table->morphs('imagable');
+            $table->morphs('imageable');
         });
     }
 
@@ -28,7 +28,7 @@ class AddMorphToImagesTable extends Migration
     {
         Schema::table('images', function (Blueprint $table) {
             $table->unsignedBigInteger('blog_post_id')->nullable();
-            $table->dropMorphs('imagable');
+            $table->dropMorphs('imageable');
         });
     }
 }

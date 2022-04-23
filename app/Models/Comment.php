@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use App\Models\BlogPost;
 
 class Comment extends Model
 {
@@ -13,9 +14,9 @@ class Comment extends Model
 
     protected $fillable = ['content', 'user_id'];
 
-    public function blogPost() {
+    public function commentable() {
 
-        return $this->belongsTo('App\Models\BlogPost');
+        return $this->morphTo();
     }
     public function user() {
         return $this->belongsTo(User::class);
@@ -28,8 +29,10 @@ class Comment extends Model
     public static function booted() {
 
         static::creating(function($comment) {
-            Cache::forget("blog-post-{$comment->blog_post_id}");
-            Cache::forget("mostCommented");
+            if($comment->commentable_type === BlogPost::class) {
+                Cache::forget("blog-post-{$comment->commentable_id}");
+                Cache::forget("mostCommented");
+            }
         });
     }
 }
