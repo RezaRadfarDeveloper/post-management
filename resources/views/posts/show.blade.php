@@ -22,17 +22,9 @@
             <x-tags :tags="$post->tags"></x-tags>
             visited by {{$counter}} people
             <h4>Comments</h4>
-            @include('comments._form')
+                <x-commentForm :route="route('posts.comments.store', ['post'=> $post->id])"></x-commentForm>
                <x-badge type="success" :show="now()->diffInMinutes($post->created_at) < 300" />
-
-            @if(!$post->comments)
-                No comment yet!
-            @else
-                @foreach($post->comments as $comment)
-                    <p>{{$comment->content}}</p>
-                    <x-updated :date="$comment->created_at" :name="$comment->user->name"></x-updated>
-                @endforeach
-            @endif
+                <x-commentList :comments="$post->comments"></x-commentList>
         </div>
         <div class="col-4">
             @include('posts.partials._activity')

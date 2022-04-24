@@ -67,13 +67,14 @@ class PostsController extends Controller
             $thumbNailPath = Storage::disk('public')
               ->putFileAs('thumbnails',$file,now()
               ->format('Y_m_d_H_i_s').".".$file->getClientOriginalExtension());
+
+           $post->image()->save(
+               Image::make([
+                   'path' => $thumbNailPath
+               ])
+           );
        }
 
-       $post->image()->save(
-           Image::make([
-               'path' => $thumbNailPath
-           ])
-       );
 
         request()->session()->flash('status','Post was created Successfully!!!');
 
