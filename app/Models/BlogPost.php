@@ -34,7 +34,7 @@ class BlogPost extends Model
        return $query->withCount('comments')->orderBy('comments_count','desc');
    }
    public function tags() {
-       return $this->belongsToMany(Tag::class)->withTimestamps();
+       return $this->morphToMany(Tag::class, 'taggable')->withTimestamps();
    }
 
    public function scopeLatestWithRelations($query) {
