@@ -67,4 +67,11 @@ class User extends Authenticatable
             $query->whereBetween(Static::CREATED_AT,[now()->subMonths(1), now()]);
         }])->having('blog_posts_count', '>=', 4)->orderBy('blog_posts_count', 'desc');
     }
+
+    public  function scopeThatHasCommentedOnTheSamePost($query,BlogPost $blogPost) {
+            $query->whereHas('comments',function ($query) use ($blogPost) {
+                        $query->where('commentable_id','=', $blogPost->id)
+                            ->where('commentable_type', '=', BlogPost::class);
+            });
+    }
 }

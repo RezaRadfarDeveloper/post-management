@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreComment;
+use App\Jobs\NotifyUsersCommentedOnPostWatched;
 use App\Mail\CommentPosted;
 use App\Models\BlogPost;
 use Illuminate\Http\Request;
@@ -24,6 +25,8 @@ class PostCommentController extends Controller
        Mail::to($post->user)->send(
            new CommentPosted($comment)
        );
+
+        NotifyUsersCommentedOnPostWatched::dispatch($comment);
 
         request()->session()->flash('status','comments added Successfully!!!');
         return redirect()->back();
