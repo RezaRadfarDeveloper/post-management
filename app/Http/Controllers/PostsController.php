@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewPostPosted;
 use App\Http\Requests\StorePost;
 use App\Models\BlogPost;
 use App\Models\Image;
@@ -75,6 +76,7 @@ class PostsController extends Controller
            );
        }
 
+       event(new NewPostPosted($post));
 
         request()->session()->flash('status','Post was created Successfully!!!');
 

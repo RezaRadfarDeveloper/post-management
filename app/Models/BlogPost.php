@@ -40,11 +40,4 @@ class BlogPost extends Model
    public function scopeLatestWithRelations($query) {
        return $query->latest()->withCount('comments')->with('user','tags');
    }
-
-   public static function booted() {
-
-       static::updating(function($post) {
-           Cache::forget("blog-post-{$post->id}");
-       });
-   }
  }
